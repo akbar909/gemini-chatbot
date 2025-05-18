@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { ChatSidebar } from "@/components/chat/chat-sidebar";
-import { ChatMessages } from "@/components/chat/chat-messages";
 import { ChatInput } from "@/components/chat/chat-input";
+import { ChatMessages } from "@/components/chat/chat-messages";
+import { ChatSidebar } from "@/components/chat/chat-sidebar";
 import { useChat } from "@/lib/hooks/useChat";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function ChatPage() {
   const params = useParams<{ id: string }>();
@@ -54,10 +54,9 @@ export default function ChatPage() {
   return (
     <div className="flex h-screen">
       <ChatSidebar chatId={chatId} />
-      
-      <main className="flex-1 flex flex-col">
+      <main className="flex-1 flex flex-col overflow-y-auto">
         <div className="h-14 border-b border-border flex items-center px-4">
-          <h1 className="font-medium truncate mx-auto">{title || "Chat"}</h1>
+          <h1 className="font-medium truncate mx-auto">{"Chat"}</h1>
         </div>
         
         <div className="flex-1 overflow-hidden flex flex-col">
@@ -65,6 +64,8 @@ export default function ChatPage() {
             messages={currentChat?.messages || []}
             isLoading={loading || messageLoading}
           />
+        </div>
+        <div className="sticky bottom-0 z-10">
           <ChatInput
             onSend={handleSendMessage}
             isLoading={loading || messageLoading}

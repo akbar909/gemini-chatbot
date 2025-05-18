@@ -64,7 +64,7 @@ export function ChatInput({
           onChange={handleTextareaChange}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
-          className="min-h-[60px] max-h-[200px] resize-none pr-14 bg-muted/50 border-muted"
+          className="min-h-[60px] max-h-[200px]  resize-none pr-14  border-muted"
           disabled={isLoading}
         />
         <Button

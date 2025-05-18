@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -22,13 +22,17 @@ export default function Home() {
 
       <main className="flex-1 container mx-auto px-4 py-12 md:py-24 flex flex-col items-center justify-center text-center">
         <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-6">
-          Chat with <span className="bg-gradient-to-r from-purple-600 to-blue-600 text-transparent bg-clip-text">AI Assistant</span>
+          Chat with{" "}
+          <span className="bg-gradient-to-r from-purple-600 to-blue-600 text-transparent bg-clip-text">
+            AI Assistant
+          </span>
         </h1>
-        
+
         <p className="text-xl md:text-2xl text-muted-foreground max-w-[800px] mb-12">
-          Experience intelligent conversations powered by Google&apos;s Gemini AI. Ask questions, get code examples, brainstorm ideas, and more.
+          Experience intelligent conversations powered by Google&apos;s Gemini AI.
+          Ask questions, get code examples, brainstorm ideas, and more.
         </p>
-        
+
         <div className="grid gap-6 md:grid-cols-3 w-full max-w-[1000px] mb-12">
           <div className="flex flex-col bg-card p-6 rounded-lg shadow-sm border border-border">
             <div className="mb-4 bg-primary/10 p-3 rounded-full w-12 h-12 flex items-center justify-center">
@@ -51,10 +55,11 @@ export default function Home() {
             </div>
             <h3 className="text-xl font-bold mb-2">Ask Anything</h3>
             <p className="text-muted-foreground">
-              Get answers to your questions about any topic, from history to science to everyday life.
+              Get answers to your questions about any topic, from history to science
+              to everyday life.
             </p>
           </div>
-          
+
           <div className="flex flex-col bg-card p-6 rounded-lg shadow-sm border border-border">
             <div className="mb-4 bg-primary/10 p-3 rounded-full w-12 h-12 flex items-center justify-center">
               <svg
@@ -76,10 +81,11 @@ export default function Home() {
             </div>
             <h3 className="text-xl font-bold mb-2">Get Code Help</h3>
             <p className="text-muted-foreground">
-              Receive code examples, explanations, and guidance across various programming languages.
+              Receive code examples, explanations, and guidance across various
+              programming languages.
             </p>
           </div>
-          
+
           <div className="flex flex-col bg-card p-6 rounded-lg shadow-sm border border-border">
             <div className="mb-4 bg-primary/10 p-3 rounded-full w-12 h-12 flex items-center justify-center">
               <svg
@@ -100,54 +106,68 @@ export default function Home() {
             </div>
             <h3 className="text-xl font-bold mb-2">Save Conversations</h3>
             <p className="text-muted-foreground">
-              All your conversations are automatically saved, so you can revisit them anytime.
+              All your conversations are automatically saved, so you can revisit
+              them anytime.
             </p>
           </div>
         </div>
-        
-        <div className="w-full max-w-[800px] relative bg-card rounded-xl overflow-hidden border border-border shadow-lg">
+        <div className="w-full max-w-[800px] mx-auto relative bg-card rounded-xl overflow-hidden border border-border shadow-lg sm:max-w-full">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-secondary/10 pointer-events-none" />
-          <div className="px-6 py-4 border-b border-border flex justify-between items-center">
-            <div className="text-sm font-medium">Chat</div>
-            <div className="flex gap-2">
-              <div className="w-3 h-3 rounded-full bg-red-500"></div>
-              <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-              <div className="w-3 h-3 rounded-full bg-green-500"></div>
+
+          {/* Header */}
+          <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-border flex justify-between items-center">
+            <div className="text-sm sm:text-base font-medium">Chat</div>
+            <div className="flex gap-1 sm:gap-2">
+              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-red-500"></div>
+              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-yellow-500"></div>
+              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500"></div>
             </div>
           </div>
-          <div className="p-6 space-y-6">
-            <div className="flex gap-4">
-              <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                <span className="text-xs font-bold">U</span>
+
+          {/* Messages */}
+          <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 text-sm">
+            {/* User Message */}
+            <div className="flex gap-2 sm:gap-4">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                <span className="text-[10px] sm:text-xs font-bold">U</span>
               </div>
-              <div className="flex-1 bg-secondary/50 p-4 rounded-lg rounded-tl-none">
+              <div className="flex-1 bg-secondary/50 p-3 sm:p-4 rounded-lg rounded-tl-none">
                 <p>How do I create a responsive grid layout in CSS?</p>
               </div>
             </div>
-            
-            <div className="flex gap-4">
-              <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center flex-shrink-0">
-                <span className="text-xs font-bold">AI</span>
+
+            <div className="flex gap-2 sm:gap-4">
+              {/* AI Avatar */}
+              <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-purple-500/20 flex items-center justify-center flex-shrink-0">
+                <span className="text-[9px] sm:text-xs font-bold">AI</span>
               </div>
-              <div className="flex-1 bg-muted p-4 rounded-lg rounded-tl-none">
-                <p className="mb-4">
-                  You can create a responsive grid layout using CSS Grid. Here&apos;s an example:
+
+              {/* AI Message Bubble */}
+              <div className="flex-1 bg-muted p-2 sm:p-4 rounded-lg rounded-tl-none text-xs sm:text-sm">
+                <p className="mb-2 sm:mb-4">
+                  You can create a responsive grid layout using CSS Grid. Here's an example:
                 </p>
-                <div className="bg-card p-3 rounded border border-border font-mono text-sm mb-2">
-                  <pre><code>{`.container {
+
+                <div className="bg-card p-2 sm:p-3 rounded border border-border font-mono text-[10px] sm:text-sm mb-2">
+                  <pre>
+                    <code>{`.container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns:
+   repeat(auto-fill, minmax(100px, 1fr));
   grid-gap: 1rem;
-}`}</code></pre>
+}`}</code>
+                  </pre>
                 </div>
+
                 <p>
                   This creates a grid where each column is at least 250px wide, and as many columns fit in the available space.
                 </p>
               </div>
             </div>
+
           </div>
         </div>
-        
+
         <div className="mt-12">
           <Link href="/auth/register">
             <Button size="lg" className="text-lg px-8">
@@ -163,10 +183,16 @@ export default function Home() {
             © 2025 AI Chat. All rights reserved.
           </div>
           <div className="flex gap-6">
-            <Link href="/privacy" className="text-sm text-muted-foreground hover:text-foreground">
+            <Link
+              href="/privacy"
+              className="text-sm text-muted-foreground hover:text-foreground"
+            >
               Privacy Policy
             </Link>
-            <Link href="/terms" className="text-sm text-muted-foreground hover:text-foreground">
+            <Link
+              href="/terms"
+              className="text-sm text-muted-foreground hover:text-foreground"
+            >
               Terms of Service
             </Link>
           </div>
