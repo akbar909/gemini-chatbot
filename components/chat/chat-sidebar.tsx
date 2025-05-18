@@ -187,7 +187,7 @@ export function ChatSidebar({ chatId }: ChatSidebarProps) {
             <AlertDialogCancel onClick={() => setDeleteModalOpen(false)}>
               Cancel
             </AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDeleteChat} variant="destructive">
+            <AlertDialogAction onClick={confirmDeleteChat} >
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>
