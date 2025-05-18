@@ -58,7 +58,7 @@ export function ChatMessages({ messages, isLoading }: ChatMessagesProps) {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 pb-0 space-y-6">
+    <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 pb-0 space-y-6 max-w-full text-wrap break-words">
       {messages.map((message, index) => {
         const isUser = message.role === "user";
 
@@ -87,7 +87,7 @@ export function ChatMessages({ messages, isLoading }: ChatMessagesProps) {
               </div>
 
               <div
-                className={`prose prose-sm max-w-none
+                className={`prose prose-sm max-w-full break-words text-wrap
                   ${isUser ? "prose-p:mb-2 prose-p:leading-normal" : "prose-p:mb-3 prose-code:text-primary-foreground"}
                 `}
               >
@@ -97,18 +97,19 @@ export function ChatMessages({ messages, isLoading }: ChatMessagesProps) {
                   components={{
                     pre({ node, children, ...props }) {
                       return (
-                        <div className="relative group mb-4">
+                        <div className="relative group mb-4 w-72 sm:w-full text-wrap overflow-x-auto">
                           <pre
-                            className="rounded-lg bg-card p-3 border border-border overflow-x-auto text-sm font-mono"
+                            className="rounded-lg bg-card p-3 border border-border text-sm font-mono  break-words overflow-x-auto max-w-full text-wrap"
                             {...props}
                           >
+
                             {children}
                           </pre>
                           {(() => {
                             const firstChild = React.Children.toArray(children)[0];
                             const codeContent =
                               React.isValidElement(firstChild) &&
-                              typeof firstChild.props.children === "string"
+                                typeof firstChild.props.children === "string"
                                 ? firstChild.props.children
                                 : "";
                             return <CopyButton content={codeContent} />;
@@ -117,7 +118,8 @@ export function ChatMessages({ messages, isLoading }: ChatMessagesProps) {
                       );
                     },
                     p({ children }) {
-                      return <p className="mb-4 last:mb-0">{children}</p>;
+                      return <p className="mb-4 last:mb-0 break-words text-wrap max-w-full text-justify">{children}</p>
+
                     },
                     a({ href, children }) {
                       return (

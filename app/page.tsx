@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import Link from "next/link";
-
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-background to-muted">

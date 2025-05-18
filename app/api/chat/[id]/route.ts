@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import connectToDatabase from "@/lib/db";
 import Chat from "@/models/Chat";
 import mongoose from "mongoose";
+import { getServerSession } from "next-auth/next";
+import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
@@ -124,34 +124,34 @@ export async function DELETE(
 ) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    
+
     const { id } = params;
-    
+
     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
       return NextResponse.json(
         { error: "Invalid chat ID" },
         { status: 400 }
       );
     }
-    
+
     await connectToDatabase();
-    
+
     const result = await Chat.deleteOne({
       _id: id,
       userId: session.user.id,
     });
-    
+
     if (result.deletedCount === 0) {
       return NextResponse.json(
         { error: "Chat not found" },
         { status: 404 }
       );
     }
-    
+
     return NextResponse.json({ success: true });
   } catch (error: any) {
     console.error("Error deleting chat:", error);

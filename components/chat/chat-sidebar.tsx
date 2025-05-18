@@ -1,20 +1,36 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Skeleton } from "@/components/ui/skeleton";
-import { formatDistanceToNow } from "date-fns";
-import { MessageSquarePlus, Trash2, Menu, X, LogOut } from "lucide-react";
-import { useChat } from "@/lib/hooks/useChat";
-import { useAuth } from "@/lib/hooks/useAuth";
 import {
   Sheet,
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useAuth } from "@/lib/hooks/useAuth";
+import { useChat } from "@/lib/hooks/useChat";
+import { formatDistanceToNow } from "date-fns";
+import { LogOut, Menu, MessageSquarePlus, MoreVertical } from "lucide-react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
 import { ThemeToggle } from "../ui/theme-toggle";
 
 interface ChatSidebarProps {
@@ -27,6 +43,8 @@ export function ChatSidebar({ chatId }: ChatSidebarProps) {
   const { chats, loading, deleteChat, createChat } = useChat(chatId);
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [chatToDelete, setChatToDelete] = useState<string | null>(null);
 
   const handleCreateChat = async () => {
     setOpen(false);
@@ -37,9 +55,16 @@ export function ChatSidebar({ chatId }: ChatSidebarProps) {
     e.preventDefault();
     e.stopPropagation();
 
-    if (window.confirm("Are you sure you want to delete this chat?")) {
-      await deleteChat(id);
+    setChatToDelete(id);
+    setDeleteModalOpen(true);
+  };
+
+  const confirmDeleteChat = async () => {
+    if (chatToDelete) {
+      await deleteChat(chatToDelete);
+      setChatToDelete(null);
     }
+    setDeleteModalOpen(false);
   };
 
   const sidebarContent = (
@@ -105,15 +130,24 @@ export function ChatSidebar({ chatId }: ChatSidebarProps) {
                       })}
                     </div>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 opacity-0 group-hover:opacity-100"
-                    onClick={(e) => handleDeleteChat(chat._id, e)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                    <span className="sr-only">Delete</span>
-                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                      >
+                        <MoreVertical className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem
+                        onClick={(e) => handleDeleteChat(chat._id, e)}
+                      >
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </Link>
               );
             })
@@ -140,6 +174,25 @@ export function ChatSidebar({ chatId }: ChatSidebarProps) {
           Sign out
         </Button>
       </div>
+
+      <AlertDialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm Delete</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this chat? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDeleteModalOpen(false)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDeleteChat} variant="destructive">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 

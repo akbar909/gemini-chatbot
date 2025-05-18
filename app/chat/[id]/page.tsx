@@ -59,7 +59,7 @@ export default function ChatPage() {
           <h1 className="font-medium truncate mx-auto">{"Chat"}</h1>
         </div>
         
-        <div className="flex-1 overflow-hidden flex flex-col">
+        <div className="flex-1 overflow-hidden flex flex-col overflow-x-hidden">
           <ChatMessages
             messages={currentChat?.messages || []}
             isLoading={loading || messageLoading}
