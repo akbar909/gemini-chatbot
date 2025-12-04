@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 
 export interface Message {
   role: "user" | "assistant";
@@ -96,8 +96,8 @@ export function useChat(chatId?: string) {
       
       setCurrentChat(chat);
       
-      // Generate AI response
-      await generateAIResponse(chat._id);
+      // Generate AI response using the initial user message
+      await generateAIResponse(chat._id, message);
       
       // Navigate to the new chat
       router.push(`/chat/${chat._id}`);
@@ -131,8 +131,8 @@ export function useChat(chatId?: string) {
       const updatedChat = await response.json();
       setCurrentChat(updatedChat);
       
-      // Generate AI response
-      await generateAIResponse(id);
+      // Generate AI response using the message just sent
+      await generateAIResponse(id, message);
       
       // Refresh chats list to update titles
       fetchChats();
@@ -147,11 +147,21 @@ export function useChat(chatId?: string) {
   }, [fetchChats]);
 
   // Generate AI response
-  const generateAIResponse = useCallback(async (id: string) => {
+  const generateAIResponse = useCallback(async (id: string, userMessage?: string) => {
     try {
       setMessageLoading(true);
+      // Prefer the provided userMessage; fallback to last user message in state
+      const latestUserMessage = (userMessage ?? (
+        currentChat?.messages
+          ?.slice()
+          .reverse()
+          .find((m) => m.role === "user")?.content
+      )) || "";
+
       const response = await fetch(`/api/chat/${id}/message`, {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: latestUserMessage }),
       });
       
       if (!response.ok) {

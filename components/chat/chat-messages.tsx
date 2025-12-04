@@ -1,17 +1,16 @@
 "use client";
-import * as React from "react";
-import { useEffect, useRef, useState } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Copy, Check } from "lucide-react";
 import { Message } from "@/lib/hooks/useChat";
 import { formatRelativeTime } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { Check, Copy } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import rehypeRaw from "rehype-raw";
 import rehypeHighlight from "rehype-highlight";
+import rehypeRaw from "rehype-raw";
+import remarkGfm from "remark-gfm";
 
 interface ChatMessagesProps {
   messages: Message[];
@@ -58,7 +57,7 @@ export function ChatMessages({ messages, isLoading }: ChatMessagesProps) {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 pb-0 space-y-6 max-w-full text-wrap break-words">
+    <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 pb-0 space-y-6 max-w-full break-words">
       {messages.map((message, index) => {
         const isUser = message.role === "user";
 
@@ -76,7 +75,7 @@ export function ChatMessages({ messages, isLoading }: ChatMessagesProps) {
               </AvatarFallback>
             </Avatar>
 
-            <div className="flex-1 space-y-2">
+            <div className="flex-1 space-y-2 max-w-[80ch] sm:max-w-[100ch]">
               <div className="flex items-center gap-2">
                 <span className="font-semibold text-sm">{isUser ? "You" : "AI Assistant"}</span>
                 {message.createdAt && (
@@ -87,7 +86,7 @@ export function ChatMessages({ messages, isLoading }: ChatMessagesProps) {
               </div>
 
               <div
-                className={`prose prose-sm max-w-full break-words text-wrap
+                className={`prose prose-sm max-w-full break-words
                   ${isUser ? "prose-p:mb-2 prose-p:leading-normal" : "prose-p:mb-3 prose-code:text-primary-foreground"}
                 `}
               >
@@ -96,29 +95,25 @@ export function ChatMessages({ messages, isLoading }: ChatMessagesProps) {
                   rehypePlugins={[rehypeRaw, rehypeHighlight]}
                   components={{
                     pre({ node, children, ...props }) {
+                      const preRef = useRef<HTMLPreElement | null>(null);
                       return (
-                        <div className="relative group mb-4 w-72 sm:w-full text-wrap overflow-x-auto">
+                        <div className="relative group mb-4 w-full overflow-x-auto">
                           <pre
-                            className="rounded-lg bg-card p-3 border border-border text-sm font-mono  break-words overflow-x-auto max-w-full text-wrap"
+                            ref={preRef}
+                            className="rounded-lg bg-card p-3 border border-border text-sm font-mono break-words overflow-x-auto max-w-full"
                             {...props}
                           >
-
                             {children}
                           </pre>
-                          {(() => {
-                            const firstChild = React.Children.toArray(children)[0];
-                            const codeContent =
-                              React.isValidElement(firstChild) &&
-                                typeof firstChild.props.children === "string"
-                                ? firstChild.props.children
-                                : "";
-                            return <CopyButton content={codeContent} />;
-                          })()}
+                          <CopyButton getContent={() => {
+                            const el = preRef.current?.querySelector('code');
+                            return (el?.textContent ?? '').trim();
+                          }} />
                         </div>
                       );
                     },
                     p({ children }) {
-                      return <p className="mb-4 last:mb-0 break-words text-wrap max-w-full text-justify">{children}</p>
+                      return <p className="mb-4 last:mb-0 break-words max-w-full text-justify">{children}</p>
 
                     },
                     a({ href, children }) {
@@ -165,13 +160,15 @@ export function ChatMessages({ messages, isLoading }: ChatMessagesProps) {
 }
 
 interface CopyButtonProps {
-  content: string;
+  getContent: () => string;
 }
 
-function CopyButton({ content }: CopyButtonProps) {
+function CopyButton({ getContent }: CopyButtonProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
+    const content = getContent();
+    if (!content) return;
     navigator.clipboard.writeText(content);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
