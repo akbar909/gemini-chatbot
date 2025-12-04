@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import connectToDatabase from "@/lib/db";
 import Chat from "@/models/Chat";
 import mongoose from "mongoose";
+import { getServerSession } from "next-auth/next";
+import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
@@ -20,7 +20,8 @@ export async function GET(request: NextRequest) {
     
     const chats = await Chat.find({ userId: session.user.id })
       .sort({ updatedAt: -1 })
-      .select("_id title updatedAt");
+      .select("_id title updatedAt")
+      .lean();
     
     return NextResponse.json(chats);
   } catch (error: any) {

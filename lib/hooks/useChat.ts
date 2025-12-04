@@ -45,25 +45,7 @@ export function useChat(chatId?: string) {
     }
   }, []);
 
-  // Fetch a specific chat
-  const fetchChat = useCallback(async (id: string) => {
-    try {
-      setLoading(true);
-      const response = await fetch(`/api/chat/${id}`);
-      
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || "Failed to fetch chat");
-      }
-      
-      const data = await response.json();
-      setCurrentChat(data);
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  
 
   // Create a new chat
   const createChat = useCallback(async (message: string) => {
@@ -95,12 +77,10 @@ export function useChat(chatId?: string) {
       ]);
       
       setCurrentChat(chat);
-      
-      // Generate AI response using the initial user message
-      await generateAIResponse(chat._id, message);
-      
-      // Navigate to the new chat
+      // Navigate immediately so the user sees the chat page right away
       router.push(`/chat/${chat._id}`);
+      // Trigger AI response in the background (non-blocking)
+      void generateAIResponse(chat._id, message);
       
       return chat._id;
     } catch (err: any) {
@@ -196,6 +176,34 @@ export function useChat(chatId?: string) {
       setMessageLoading(false);
     }
   }, []);
+
+  // Fetch a specific chat (defined after generateAIResponse to avoid use-before-declare)
+  const fetchChat = useCallback(async (id: string) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/chat/${id}`);
+      
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to fetch chat");
+      }
+      
+      const data = await response.json();
+      setCurrentChat(data);
+
+      // If the latest message is from the user, auto-generate an AI reply in background
+      const last = Array.isArray(data?.messages) && data.messages.length > 0
+        ? data.messages[data.messages.length - 1]
+        : null;
+      if (last && last.role === "user" && typeof last.content === "string" && last.content.trim().length > 0) {
+        void generateAIResponse(id, last.content);
+      }
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [generateAIResponse]);
 
   // Delete a chat
   const deleteChat = useCallback(async (id: string) => {

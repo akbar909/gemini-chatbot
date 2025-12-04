@@ -92,14 +92,7 @@ export async function POST(
 
     const aiResponse = result.response.text();
 
-    // Save user message
-    chat.messages.push({
-      role: "user",
-      content: message,
-      createdAt: new Date(),
-    });
-
-    // Save AI response
+    // Save AI response only (user message is already saved by create/PATCH route)
     chat.messages.push({
       role: "assistant",
       content: aiResponse,

@@ -47,6 +47,9 @@ const ChatSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Helpful indexes for faster lookups and sorting
+ChatSchema.index({ userId: 1, updatedAt: -1 });
+
 // Create a title based on the first user message if no title is provided
 ChatSchema.pre('save', function (next) {
   const chat = this as ChatDocument;

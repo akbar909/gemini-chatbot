@@ -33,7 +33,7 @@ export async function GET(
     const chat = await Chat.findOne({
       _id: id,
       userId: session.user.id,
-    });
+    }).lean();
     
     if (!chat) {
       return NextResponse.json(
